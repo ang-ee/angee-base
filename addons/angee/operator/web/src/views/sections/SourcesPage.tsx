@@ -10,35 +10,35 @@ import { StateTag } from "../parts/StateTag";
 
 type SourceRowData = DaemonRow<SourceState>;
 
-/** Sources pane: cached git/local sources with a drift readout. Rows open the source detail page. */
-export function SourcesSection(): ReactNode {
+/** Sources page: cached git/local sources with a drift readout. Rows open the source detail page. */
+export function SourcesPage(): ReactNode {
   const t = useOperatorT();
 
   const columns = useMemo<readonly ListColumn<SourceRowData>[]>(
     () => [
       {
         field: "name",
-        header: t("operator.sources.column.name"),
+        header: t("sources.column.name"),
         render: (source) => <span className="font-medium text-fg">{source.name}</span>,
       },
       {
         field: "kind",
-        header: t("operator.sources.column.kind"),
+        header: t("sources.column.kind"),
         render: (source) => <span className={textRoleVariants({ role: "meta" })}>{source.kind}</span>,
       },
       {
         field: "status",
-        header: t("operator.sources.column.status"),
+        header: t("sources.column.status"),
         render: (source) => <StateTag state={source.state ?? "unknown"} />,
       },
       {
         field: "branch",
-        header: t("operator.sources.column.branch"),
+        header: t("sources.column.branch"),
         render: (source) => <span className={textRoleVariants({ role: "meta" })}>{source.branch ?? "—"}</span>,
       },
       {
         field: "aheadBehind",
-        header: t("operator.sources.column.aheadBehind"),
+        header: t("sources.column.aheadBehind"),
         align: "right",
         render: (source) => (
           <span className={textRoleVariants({ role: "meta", numeric: true })}>
@@ -48,10 +48,10 @@ export function SourcesSection(): ReactNode {
       },
       {
         field: "dirty",
-        header: t("operator.sources.column.dirty"),
+        header: t("sources.column.dirty"),
         render: (source) => (
           <span className={textRoleVariants({ role: "meta" })}>
-            {source.dirty ? t("operator.sources.dirty") : t("operator.sources.clean")}
+            {source.dirty ? t("sources.dirty") : t("sources.clean")}
           </span>
         ),
       },
@@ -65,7 +65,7 @@ export function SourcesSection(): ReactNode {
       selectRows={(snapshot) => daemonRowsByName(snapshot.sources)}
       columns={columns}
       rowHref={(source) => sourceDetailPath(source.name)}
-      emptyMessage={t("operator.sources.empty")}
+      emptyContent={t("sources.empty")}
     />
   );
 }

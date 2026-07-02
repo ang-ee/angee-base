@@ -11,7 +11,7 @@ import {
 import type { ReactElement } from "react";
 import { describe, expect, test } from "vitest";
 
-import { WorkspaceSources } from "./WorkspacesSection";
+import { WorkspaceSources } from "./WorkspacesPage";
 
 function renderInRouter(ui: ReactElement): void {
   const rootRoute = createRootRoute();

@@ -1,14 +1,4 @@
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  RowsListView,
-  textRoleVariants,
-  useConfirm,
-  type ListColumn,
-} from "@angee/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, RowsListView, textRoleVariants, useConfirm, type ListColumn } from "@angee/ui";
 import { useMemo, type ReactNode } from "react";
 
 import {
@@ -37,8 +27,8 @@ interface StackAction {
 
 type JobRowData = DaemonRow<JobState>;
 
-/** Operations pane: the daemon job list with run + stack lifecycle controls. */
-export function OperationsSection(): ReactNode {
+/** Operations page: the daemon job list with run + stack lifecycle controls. */
+export function OperationsPage(): ReactNode {
   const t = useOperatorT();
   const { rows, fetching, error, refetch } = useOperatorRows(
     { operations: true },
@@ -50,17 +40,17 @@ export function OperationsSection(): ReactNode {
     () => [
       {
         field: "name",
-        header: t("operator.operations.column.name"),
+        header: t("operations.column.name"),
         render: (job) => <span className="font-medium text-fg">{job.name}</span>,
       },
       {
         field: "runtime",
-        header: t("operator.operations.column.runtime"),
+        header: t("operations.column.runtime"),
         render: (job) => <span className={textRoleVariants({ role: "meta" })}>{job.runtime}</span>,
       },
       {
         field: "actions",
-        header: t("operator.table.actions"),
+        header: t("table.actions"),
         sortable: false,
         align: "right",
         render: (job) => (
@@ -71,7 +61,7 @@ export function OperationsSection(): ReactNode {
               size="sm"
               variant="secondary"
             >
-              {t("operator.operations.run")}
+              {t("operations.run")}
             </Button>
           </div>
         ),
@@ -87,12 +77,12 @@ export function OperationsSection(): ReactNode {
         columns={columns}
         fetching={fetching}
         error={error}
-        emptyMessage={t("operator.operations.empty")}
+        emptyContent={t("operations.empty")}
       />
 
       <Card>
         <CardHeader>
-          <CardTitle>{t("operator.operations.stack.title")}</CardTitle>
+          <CardTitle>{t("operations.stack.title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2">
@@ -143,7 +133,7 @@ function useOperationActions(refetch: () => void): {
         run: jobRun.run,
         field: "jobRun",
         variables: { name: job.name },
-        label: t("operator.operations.run"),
+        label: t("operations.run"),
       });
     },
     [jobRun.run, runDaemon, t],
@@ -153,43 +143,43 @@ function useOperationActions(refetch: () => void): {
     () => [
       {
         field: "stackBuild",
-        label: t("operator.operations.stack.build"),
+        label: t("operations.stack.build"),
         variant: "secondary",
         perform: () =>
           runDaemon({
             run: build.run,
             field: "stackBuild",
             variables: {},
-            label: t("operator.operations.stack.build"),
+            label: t("operations.stack.build"),
           }),
       },
       {
         field: "stackUp",
-        label: t("operator.operations.stack.up"),
+        label: t("operations.stack.up"),
         variant: "secondary",
         perform: () =>
           runDaemon({
             run: up.run,
             field: "stackUp",
             variables: {},
-            label: t("operator.operations.stack.up"),
+            label: t("operations.stack.up"),
           }),
       },
       {
         field: "stackDown",
-        label: t("operator.operations.stack.down"),
+        label: t("operations.stack.down"),
         variant: "ghost",
         perform: () =>
           runDaemon({
             run: down.run,
             field: "stackDown",
             variables: {},
-            label: t("operator.operations.stack.down"),
+            label: t("operations.stack.down"),
           }),
       },
       {
         field: "stackDestroy",
-        label: t("operator.operations.stack.destroy"),
+        label: t("operations.stack.destroy"),
         variant: "ghost",
         dangerous: true,
         perform: () =>
@@ -197,7 +187,7 @@ function useOperationActions(refetch: () => void): {
             run: destroy.run,
             field: "stackDestroy",
             variables: { purge: false },
-            label: t("operator.operations.stack.destroy"),
+            label: t("operations.stack.destroy"),
           }),
       },
     ],
@@ -209,8 +199,8 @@ function useOperationActions(refetch: () => void): {
       void (async () => {
         if (action.dangerous) {
           const ok = await confirm({
-            title: t("operator.operations.stack.destroy.confirm.title"),
-            body: t("operator.operations.stack.destroy.confirm.body"),
+            title: t("operations.stack.destroy.confirm.title"),
+            body: t("operations.stack.destroy.confirm.body"),
             confirm: action.label,
             danger: true,
           });

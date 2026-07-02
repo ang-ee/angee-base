@@ -1,13 +1,4 @@
-import {
-  Badge,
-  Button,
-  cn,
-  RowsListView,
-  textRoleVariants,
-  useConfirm,
-  usePrompt,
-  type ListColumn,
-} from "@angee/ui";
+import { Badge, Button, cn, RowsListView, textRoleVariants, useConfirm, usePrompt, type ListColumn } from "@angee/ui";
 import { useCallback, useMemo, type ReactNode } from "react";
 
 import { useOperatorT } from "../../i18n";
@@ -23,8 +14,8 @@ import { useRunDaemonAction } from "../parts/run-action";
 
 type SecretRowData = DaemonRow<SecretRef>;
 
-/** Secrets pane: declared secrets (presence only) + set (via a prompt) / delete. */
-export function SecretsSection(): ReactNode {
+/** Secrets page: declared secrets (presence only) + set (via a prompt) / delete. */
+export function SecretsPage(): ReactNode {
   const t = useOperatorT();
   const prompt = usePrompt();
   const { rows, fetching, error, refetch } = useOperatorRows(
@@ -39,20 +30,20 @@ export function SecretsSection(): ReactNode {
     (presetName?: string): void => {
       void (async () => {
         const values = await prompt({
-          title: t("operator.secrets.form.title"),
-          confirm: t("operator.secrets.form.submit"),
+          title: t("secrets.form.title"),
+          confirm: t("secrets.form.submit"),
           fields: [
             {
               name: "name",
-              label: t("operator.secrets.form.name"),
-              placeholder: t("operator.secrets.form.namePlaceholder"),
+              label: t("secrets.form.name"),
+              placeholder: t("secrets.form.namePlaceholder"),
               defaultValue: presetName,
               readOnly: presetName !== undefined,
             },
             {
               name: "value",
-              label: t("operator.secrets.form.value"),
-              placeholder: t("operator.secrets.form.valuePlaceholder"),
+              label: t("secrets.form.value"),
+              placeholder: t("secrets.form.valuePlaceholder"),
               type: "password",
             },
           ],
@@ -71,34 +62,34 @@ export function SecretsSection(): ReactNode {
     () => [
       {
         field: "name",
-        header: t("operator.secrets.column.name"),
+        header: t("secrets.column.name"),
         render: (secret) => <span className="font-medium text-fg">{secret.name}</span>,
       },
       {
         field: "declared",
-        header: t("operator.secrets.column.declared"),
+        header: t("secrets.column.declared"),
         render: (secret) => (
           <span className={textRoleVariants({ role: "meta" })}>
-            {secret.declared ? t("operator.secrets.yes") : t("operator.secrets.no")}
+            {secret.declared ? t("secrets.yes") : t("secrets.no")}
           </span>
         ),
       },
       {
         field: "hasValue",
-        header: t("operator.secrets.column.hasValue"),
+        header: t("secrets.column.hasValue"),
         render: (secret) => (
           <Badge density="compact" shape="pill" tone={secret.hasValue ? "success" : "neutral"}>
-            {secret.hasValue ? t("operator.secrets.value.set") : t("operator.secrets.value.empty")}
+            {secret.hasValue ? t("secrets.value.set") : t("secrets.value.empty")}
           </Badge>
         ),
       },
       {
         field: "required",
-        header: t("operator.secrets.column.required"),
+        header: t("secrets.column.required"),
         render: (secret) =>
           secret.required ? (
             <Badge density="compact" shape="pill" tone="warning">
-              {t("operator.secrets.yes")}
+              {t("secrets.yes")}
             </Badge>
           ) : (
             <span className="text-fg-muted">—</span>
@@ -106,14 +97,14 @@ export function SecretsSection(): ReactNode {
       },
       {
         field: "envVar",
-        header: t("operator.secrets.column.envVar"),
+        header: t("secrets.column.envVar"),
         render: (secret) => (
           <span className={textRoleVariants({ role: "meta", mono: true })}>{secret.envVar ?? "—"}</span>
         ),
       },
       {
         field: "actions",
-        header: t("operator.table.actions"),
+        header: t("table.actions"),
         sortable: false,
         align: "right",
         render: (secret) =>
@@ -123,19 +114,19 @@ export function SecretsSection(): ReactNode {
             // brick minting, so the console withholds it but still allows a re-set.
             <div className="flex justify-end gap-1">
               <Button disabled={busy} onClick={() => promptSet(secret.name)} size="sm" variant="ghost">
-                {t("operator.secrets.form.submit")}
+                {t("secrets.form.submit")}
               </Button>
-              <span className={cn(textRoleVariants({ role: "meta" }), "self-center")} title={t("operator.secrets.protected.hint")}>
-                {t("operator.secrets.protected")}
+              <span className={cn(textRoleVariants({ role: "meta" }), "self-center")} title={t("secrets.protected.hint")}>
+                {t("secrets.protected")}
               </span>
             </div>
           ) : (
             <div className="flex justify-end gap-1">
               <Button disabled={busy} onClick={() => promptSet(secret.name)} size="sm" variant="ghost">
-                {t("operator.secrets.form.submit")}
+                {t("secrets.form.submit")}
               </Button>
               <Button disabled={busy} onClick={() => deleteSecret(secret)} size="sm" variant="ghost">
-                {t("operator.secrets.delete")}
+                {t("secrets.delete")}
               </Button>
             </div>
           ),
@@ -150,12 +141,12 @@ export function SecretsSection(): ReactNode {
       columns={columns}
       toolbarActions={
         <Button disabled={busy} onClick={() => promptSet()} size="sm" variant="secondary">
-          {t("operator.secrets.form.title")}
+          {t("secrets.form.title")}
         </Button>
       }
       fetching={fetching}
       error={error}
-      emptyMessage={t("operator.secrets.empty")}
+      emptyContent={t("secrets.empty")}
     />
   );
 }
@@ -180,7 +171,7 @@ function useSecretActions(refetch: () => void): {
         run: set.run,
         field: "insert_secrets_one",
         variables: { object: { name, value } },
-        label: t("operator.secrets.set.label"),
+        label: t("secrets.set.label"),
       }),
     [runDaemon, set.run, t],
   );
@@ -189,9 +180,9 @@ function useSecretActions(refetch: () => void): {
     (secret: SecretRef): void => {
       void (async () => {
         const ok = await confirm({
-          title: t("operator.secrets.delete.confirm.title"),
-          body: t("operator.secrets.delete.confirm.body", { name: secret.name }),
-          confirm: t("operator.secrets.delete"),
+          title: t("secrets.delete.confirm.title"),
+          body: t("secrets.delete.confirm.body", { name: secret.name }),
+          confirm: t("secrets.delete"),
           danger: true,
         });
         if (!ok) return;
@@ -199,7 +190,7 @@ function useSecretActions(refetch: () => void): {
           run: remove.run,
           field: "delete_secrets_by_pk",
           variables: { id: secret.id },
-          label: t("operator.secrets.delete.label"),
+          label: t("secrets.delete.label"),
         });
       })();
     },

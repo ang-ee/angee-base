@@ -1,9 +1,4 @@
-import {
-  Badge,
-  Code,
-  type ResourceToolbarGroupOption,
-  type ListColumn,
-} from "@angee/ui";
+import { Badge, Code, type ResourceToolbarGroupOption, type ListColumn } from "@angee/ui";
 import { useMemo, type ReactNode } from "react";
 
 import { useOperatorT } from "../../i18n";
@@ -15,15 +10,15 @@ type TemplateRow = DaemonRow<TemplateDescriptor>;
 
 const MAX_INPUT_CHIPS = 6;
 
-/** Templates pane: the addable template catalog, grouped by kind. */
-export function TemplatesSection(): ReactNode {
+/** Templates page: the addable template catalog, grouped by kind. */
+export function TemplatesPage(): ReactNode {
   const t = useOperatorT();
 
   const columns = useMemo<readonly ListColumn<TemplateRow>[]>(
     () => [
       {
         field: "name",
-        header: t("operator.templates.column.name"),
+        header: t("templates.column.name"),
         render: (template) => (
           <span className="flex min-w-0 flex-col">
             <span className="truncate font-medium text-fg">{template.name ?? template.ref}</span>
@@ -33,19 +28,19 @@ export function TemplatesSection(): ReactNode {
       },
       {
         field: "kind",
-        header: t("operator.templates.column.kind"),
+        header: t("templates.column.kind"),
         render: (template) => (
           <Badge density="compact" shape="pill" tone="neutral">{template.kind}</Badge>
         ),
       },
       {
         field: "path",
-        header: t("operator.templates.column.path"),
+        header: t("templates.column.path"),
         render: (template) => <Code truncate>{template.path}</Code>,
       },
       {
         field: "inputs",
-        header: t("operator.templates.inputs"),
+        header: t("templates.inputs"),
         sortable: false,
         render: (template) => <TemplateInputs template={template} />,
       },
@@ -54,7 +49,7 @@ export function TemplatesSection(): ReactNode {
   );
 
   const groupOptions: readonly ResourceToolbarGroupOption[] = useMemo(
-    () => [{ id: "kind", label: t("operator.templates.column.kind"), group: { field: "kind" }, type: "value" }],
+    () => [{ id: "kind", label: t("templates.column.kind"), group: { field: "kind" }, type: "value" }],
     [t],
   );
 
@@ -66,7 +61,7 @@ export function TemplatesSection(): ReactNode {
       }
       columns={columns}
       groupOptions={groupOptions}
-      emptyMessage={t("operator.templates.empty.title")}
+      emptyContent={t("templates.empty.title")}
     />
   );
 }

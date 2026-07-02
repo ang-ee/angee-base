@@ -1,11 +1,4 @@
-import {
-  MetricGrid,
-  RowsListView,
-  textRoleVariants,
-  type ResourceToolbarGroupOption,
-  type ListColumn,
-  type MetricGridTile,
-} from "@angee/ui";
+import { MetricGrid, RowsListView, textRoleVariants, type ResourceToolbarGroupOption, type ListColumn, type MetricGridTile } from "@angee/ui";
 import { useMemo, type ReactNode } from "react";
 
 import { useOperatorT } from "../../i18n";
@@ -21,18 +14,18 @@ interface SummaryTile {
 
 // A read-only subset of the numeric summary fields, rendered as stat tiles.
 const SUMMARY_TILES: readonly SummaryTile[] = [
-  { id: "clean", labelKey: "operator.gitops.summary.clean" },
-  { id: "dirty", labelKey: "operator.gitops.summary.dirty" },
-  { id: "ahead", labelKey: "operator.gitops.summary.ahead" },
-  { id: "behind", labelKey: "operator.gitops.summary.behind" },
-  { id: "diverged", labelKey: "operator.gitops.summary.diverged" },
-  { id: "unpushed", labelKey: "operator.gitops.summary.unpushed" },
+  { id: "clean", labelKey: "gitops.summary.clean" },
+  { id: "dirty", labelKey: "gitops.summary.dirty" },
+  { id: "ahead", labelKey: "gitops.summary.ahead" },
+  { id: "behind", labelKey: "gitops.summary.behind" },
+  { id: "diverged", labelKey: "gitops.summary.diverged" },
+  { id: "unpushed", labelKey: "gitops.summary.unpushed" },
 ];
 
 type GitOpsRow = DaemonRow<GitOpsLink>;
 
-/** GitOps pane: a read-only topology summary above the per-link drift list. */
-export function GitOpsSection(): ReactNode {
+/** GitOps page: a read-only topology summary above the per-link drift list. */
+export function GitOpsPage(): ReactNode {
   const t = useOperatorT();
   const { snapshot, rows, fetching, error } = useOperatorRows(
     { gitOps: true },
@@ -44,32 +37,32 @@ export function GitOpsSection(): ReactNode {
     () => [
       {
         field: "source",
-        header: t("operator.gitops.column.source"),
+        header: t("gitops.column.source"),
         render: (link) => <span className="font-medium text-fg">{link.source}</span>,
       },
       {
         field: "workspace",
-        header: t("operator.gitops.column.workspace"),
+        header: t("gitops.column.workspace"),
         render: (link) => <span className={textRoleVariants({ role: "meta" })}>{link.workspace}</span>,
       },
       {
         field: "slot",
-        header: t("operator.gitops.column.slot"),
+        header: t("gitops.column.slot"),
         render: (link) => <span className={textRoleVariants({ role: "meta" })}>{link.slot}</span>,
       },
       {
         field: "state",
-        header: t("operator.gitops.column.status"),
+        header: t("gitops.column.status"),
         render: (link) => <StateTag state={link.state} />,
       },
       {
         field: "branch",
-        header: t("operator.gitops.column.branch"),
+        header: t("gitops.column.branch"),
         render: (link) => <span className={textRoleVariants({ role: "meta" })}>{link.branch ?? "—"}</span>,
       },
       {
         field: "aheadBehind",
-        header: t("operator.gitops.column.aheadBehind"),
+        header: t("gitops.column.aheadBehind"),
         align: "right",
         sortable: false,
         render: (link) => (
@@ -80,10 +73,10 @@ export function GitOpsSection(): ReactNode {
       },
       {
         field: "pushed",
-        header: t("operator.gitops.column.pushed"),
+        header: t("gitops.column.pushed"),
         render: (link) => (
           <span className={textRoleVariants({ role: "meta" })}>
-            {link.pushed ? t("operator.gitops.pushed.yes") : t("operator.gitops.pushed.no")}
+            {link.pushed ? t("gitops.pushed.yes") : t("gitops.pushed.no")}
           </span>
         ),
       },
@@ -93,8 +86,8 @@ export function GitOpsSection(): ReactNode {
 
   const groupOptions = useMemo<readonly ResourceToolbarGroupOption[]>(
     () => [
-      { id: "state", label: t("operator.gitops.column.status"), group: { field: "state" } },
-      { id: "slot", label: t("operator.gitops.column.slot"), group: { field: "slot" } },
+      { id: "state", label: t("gitops.column.status"), group: { field: "state" } },
+      { id: "slot", label: t("gitops.column.slot"), group: { field: "slot" } },
     ],
     [t],
   );
@@ -108,7 +101,7 @@ export function GitOpsSection(): ReactNode {
         groupOptions={groupOptions}
         fetching={fetching}
         error={error}
-        emptyMessage={t("operator.gitops.links.empty")}
+        emptyContent={t("gitops.links.empty")}
       />
     </div>
   );

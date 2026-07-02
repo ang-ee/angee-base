@@ -1,10 +1,4 @@
-import {
-  cn,
-  RowsListView,
-  Skeleton,
-  textRoleVariants,
-  type ListColumn,
-} from "@angee/ui";
+import { cn, RowsListView, Skeleton, textRoleVariants, type ListColumn } from "@angee/ui";
 import { useCallback, useMemo, type ReactNode } from "react";
 
 import { useOperatorT } from "../../i18n";
@@ -27,13 +21,13 @@ import {
 type WorkspaceRowData = DaemonRow<WorkspaceRef>;
 type WorkspaceSourceRowData = DaemonRow<WorkspaceSourceStatus>;
 
-export interface WorkspacesSectionProps {
+export interface WorkspacesPageProps {
   /** Restrict the list to these workspace names; omit to show every workspace. */
   names?: readonly string[];
 }
 
-/** Workspaces pane: the daemon's worktree workspaces. Rows open the detail page. */
-export function WorkspacesSection({ names }: WorkspacesSectionProps = {}): ReactNode {
+/** Workspaces page: the daemon's worktree workspaces. Rows open the detail page. */
+export function WorkspacesPage({ names }: WorkspacesPageProps = {}): ReactNode {
   const t = useOperatorT();
   const selectRows = useCallback<OperatorRowsSelector<WorkspaceRowData>>(
     (snapshot) => daemonRowsByName(
@@ -48,26 +42,26 @@ export function WorkspacesSection({ names }: WorkspacesSectionProps = {}): React
     () => [
       {
         field: "name",
-        header: t("operator.workspaces.column.name"),
+        header: t("workspaces.column.name"),
         render: (workspace) => <span className="font-medium text-fg">{workspace.name}</span>,
       },
       {
         field: "template",
-        header: t("operator.workspaces.column.template"),
+        header: t("workspaces.column.template"),
         render: (workspace) => (
           <span className={textRoleVariants({ role: "meta" })}>{workspace.template}</span>
         ),
       },
       {
         field: "path",
-        header: t("operator.workspaces.column.path"),
+        header: t("workspaces.column.path"),
         render: (workspace) => (
           <span className={textRoleVariants({ role: "meta", mono: true })}>{workspace.path}</span>
         ),
       },
       {
         field: "processComposePort",
-        header: t("operator.workspaces.column.port"),
+        header: t("workspaces.column.port"),
         align: "right",
         render: (workspace) => (
           <span className={textRoleVariants({ role: "meta", numeric: true })}>
@@ -77,7 +71,7 @@ export function WorkspacesSection({ names }: WorkspacesSectionProps = {}): React
       },
       {
         field: "ttl",
-        header: t("operator.workspaces.column.ttl"),
+        header: t("workspaces.column.ttl"),
         render: (workspace) => (
           <span className={textRoleVariants({ role: "meta" })}>{workspace.ttl ?? "—"}</span>
         ),
@@ -92,7 +86,7 @@ export function WorkspacesSection({ names }: WorkspacesSectionProps = {}): React
       selectRows={selectRows}
       columns={columns}
       rowHref={(workspace) => workspaceDetailPath(workspace.name)}
-      emptyMessage={t("operator.workspaces.empty")}
+      emptyContent={t("workspaces.empty")}
     />
   );
 }
@@ -101,11 +95,11 @@ export interface WorkspaceRowProps {
   /** The single workspace name owned by the embedding object. */
   name: string;
   /** Optional empty-state text when the daemon has not rendered the workspace yet. */
-  emptyMessage?: ReactNode;
+  emptyContent?: ReactNode;
 }
 
 /** Compact single-workspace row for views that already own the workspace identity. */
-export function WorkspaceRow({ name, emptyMessage }: WorkspaceRowProps): ReactNode {
+export function WorkspaceRow({ name, emptyContent }: WorkspaceRowProps): ReactNode {
   const t = useOperatorT();
   const { snapshot, result, refetch } = useOperatorSnapshot({ workspaces: true });
   const { actions, busy } = useWorkspaceActions(refetch);
@@ -116,14 +110,14 @@ export function WorkspaceRow({ name, emptyMessage }: WorkspaceRowProps): ReactNo
     <OperatorSection
       loading={result.fetching && !snapshot}
       error={result.error && !snapshot ? result.error : null}
-      loadingMessage={t("operator.workspaces.loading")}
+      loadingMessage={t("workspaces.loading")}
       loadingContent={<WorkspaceRowSkeleton />}
     >
       {workspace ? (
         <WorkspaceControlRow actions={actions} busy={busy} workspace={workspace} />
       ) : (
         <p className={cn(textRoleVariants({ role: "meta" }), "border-y border-border-subtle py-3")}>
-          {emptyMessage ?? t("operator.workspaces.empty")}
+          {emptyContent ?? t("workspaces.empty")}
         </p>
       )}
     </OperatorSection>
@@ -133,14 +127,14 @@ export function WorkspaceRow({ name, emptyMessage }: WorkspaceRowProps): ReactNo
 export interface WorkspaceSourcesProps {
   sources: readonly WorkspaceSourceStatus[];
   title?: ReactNode;
-  emptyMessage?: ReactNode;
+  emptyContent?: ReactNode;
 }
 
 /** The daemon-owned source status table for a workspace. */
 export function WorkspaceSources({
   sources,
   title,
-  emptyMessage,
+  emptyContent,
 }: WorkspaceSourcesProps): ReactNode {
   const t = useOperatorT();
   const rows = daemonRows(sources, (source) => `${source.slot}:${source.source}`);
@@ -149,7 +143,7 @@ export function WorkspaceSources({
     () => [
       {
         field: "slot",
-        header: t("operator.workspaceSources.column.slot"),
+        header: t("workspaceSources.column.slot"),
         render: (source) => (
           <span>
             <span className="block font-medium text-fg">{source.slot}</span>
@@ -159,7 +153,7 @@ export function WorkspaceSources({
       },
       {
         field: "state",
-        header: t("operator.workspaceSources.column.state"),
+        header: t("workspaceSources.column.state"),
         render: (source) => (
           <span>
             <StateTag state={source.state} />
@@ -171,7 +165,7 @@ export function WorkspaceSources({
       },
       {
         field: "branch",
-        header: t("operator.workspaceSources.column.branch"),
+        header: t("workspaceSources.column.branch"),
         render: (source) => (
           <span className={textRoleVariants({ role: "meta" })}>
             {source.branch ?? source.ref ?? source.currentRef ?? "—"}
@@ -180,14 +174,14 @@ export function WorkspaceSources({
       },
       {
         field: "drift",
-        header: t("operator.workspaceSources.column.drift"),
+        header: t("workspaceSources.column.drift"),
         render: (source) => (
           <span className={textRoleVariants({ role: "meta" })}>{workspaceSourceDrift(source, t)}</span>
         ),
       },
       {
         field: "path",
-        header: t("operator.workspaceSources.column.path"),
+        header: t("workspaceSources.column.path"),
         render: (source) => (
           <span className={cn(textRoleVariants({ role: "meta", mono: true, truncate: true }), "block max-w-80")}>
             {source.path}
@@ -202,13 +196,13 @@ export function WorkspaceSources({
     <section className="flex flex-col gap-2">
       {title !== null ? (
         <h4 className="text-13 font-medium text-fg">
-          {title ?? t("operator.workspaceSources.title")}
+          {title ?? t("workspaceSources.title")}
         </h4>
       ) : null}
       <RowsListView<WorkspaceSourceRowData>
         rows={rows}
         columns={columns}
-        emptyMessage={emptyMessage ?? t("operator.workspaceSources.empty")}
+        emptyContent={emptyContent ?? t("workspaceSources.empty")}
         pageSize={5}
         scope="local"
       />
@@ -267,10 +261,10 @@ function workspaceSourceDrift(
   t: (key: string) => string,
 ): string {
   if (source.error) return source.error;
-  if (source.dirty) return t("operator.workspaceSources.dirty");
+  if (source.dirty) return t("workspaceSources.dirty");
   const ahead = source.ahead ?? 0;
   const behind = source.behind ?? 0;
   if (ahead || behind) return `+${ahead} / -${behind}`;
   if (source.pushed === false && source.unpushedReason) return source.unpushedReason;
-  return t("operator.workspaceSources.clean");
+  return t("workspaceSources.clean");
 }

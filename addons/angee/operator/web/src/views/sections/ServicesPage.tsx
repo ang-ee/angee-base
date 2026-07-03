@@ -1,10 +1,4 @@
-import {
-  cn,
-  Skeleton,
-  textRoleVariants,
-  type ResourceToolbarGroupOption,
-  type ListColumn,
-} from "@angee/ui";
+import { cn, Skeleton, textRoleVariants, type ResourceToolbarGroupOption, type ListColumn } from "@angee/ui";
 import { useCallback, useMemo, type ReactNode } from "react";
 
 import { useOperatorT } from "../../i18n";
@@ -23,13 +17,13 @@ import { useServiceActions } from "./service-actions";
 
 type ServiceRowData = DaemonRow<ServiceState>;
 
-export interface ServicesSectionProps {
+export interface ServicesPageProps {
   /** Restrict the list to these service names; omit to show every service. */
   names?: readonly string[];
 }
 
-/** Services pane: the daemon service list. Rows open the service detail page. */
-export function ServicesSection({ names }: ServicesSectionProps = {}): ReactNode {
+/** Services page: the daemon service list. Rows open the service detail page. */
+export function ServicesPage({ names }: ServicesPageProps = {}): ReactNode {
   const t = useOperatorT();
   const selectRows = useCallback<OperatorRowsSelector<ServiceRowData>>(
     (snapshot) => daemonRowsByName(
@@ -44,22 +38,22 @@ export function ServicesSection({ names }: ServicesSectionProps = {}): ReactNode
     () => [
       {
         field: "name",
-        header: t("operator.services.column.name"),
+        header: t("services.column.name"),
         render: (service) => <span className="font-medium text-fg">{service.name}</span>,
       },
       {
         field: "runtime",
-        header: t("operator.services.column.runtime"),
+        header: t("services.column.runtime"),
         render: (service) => <span className={textRoleVariants({ role: "meta" })}>{service.runtime}</span>,
       },
       {
         field: "status",
-        header: t("operator.services.column.status"),
+        header: t("services.column.status"),
         render: (service) => <StateTag state={service.status} />,
       },
       {
         field: "health",
-        header: t("operator.services.column.health"),
+        header: t("services.column.health"),
         render: (service) => <span className={textRoleVariants({ role: "meta" })}>{service.health ?? "—"}</span>,
       },
     ],
@@ -68,8 +62,8 @@ export function ServicesSection({ names }: ServicesSectionProps = {}): ReactNode
 
   const groupOptions: readonly ResourceToolbarGroupOption[] = useMemo(
     () => [
-      { id: "status", label: t("operator.services.column.status"), group: { field: "status" }, type: "value" },
-      { id: "runtime", label: t("operator.services.column.runtime"), group: { field: "runtime" }, type: "value" },
+      { id: "status", label: t("services.column.status"), group: { field: "status" }, type: "value" },
+      { id: "runtime", label: t("services.column.runtime"), group: { field: "runtime" }, type: "value" },
     ],
     [t],
   );
@@ -81,7 +75,7 @@ export function ServicesSection({ names }: ServicesSectionProps = {}): ReactNode
       columns={columns}
       groupOptions={groupOptions}
       rowHref={(service) => serviceDetailPath(service.name)}
-      emptyMessage={t("operator.services.empty")}
+      emptyContent={t("services.empty")}
     />
   );
 }
@@ -90,11 +84,11 @@ export interface ServiceRowProps {
   /** The single service name owned by the embedding object. */
   name: string;
   /** Optional empty-state text when the daemon has not rendered the service yet. */
-  emptyMessage?: ReactNode;
+  emptyContent?: ReactNode;
 }
 
 /** Compact single-service row for views that already own the service identity. */
-export function ServiceRow({ name, emptyMessage }: ServiceRowProps): ReactNode {
+export function ServiceRow({ name, emptyContent }: ServiceRowProps): ReactNode {
   const t = useOperatorT();
   const { snapshot, result, refetch } = useOperatorSnapshot({ services: true });
   const { actions, busy } = useServiceActions(refetch);
@@ -104,7 +98,7 @@ export function ServiceRow({ name, emptyMessage }: ServiceRowProps): ReactNode {
     <OperatorSection
       loading={result.fetching && !snapshot}
       error={result.error && !snapshot ? result.error : null}
-      loadingMessage={t("operator.services.loading")}
+      loadingMessage={t("services.loading")}
       loadingContent={<ServiceRowSkeleton />}
     >
       {service ? (
@@ -123,7 +117,7 @@ export function ServiceRow({ name, emptyMessage }: ServiceRowProps): ReactNode {
         </div>
       ) : (
         <p className={cn(textRoleVariants({ role: "meta" }), "border-y border-border-subtle py-3")}>
-          {emptyMessage ?? t("operator.services.empty")}
+          {emptyContent ?? t("services.empty")}
         </p>
       )}
     </OperatorSection>

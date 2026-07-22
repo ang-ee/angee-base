@@ -1,5 +1,5 @@
 {
-  "name": "@angee/messaging",
+  "name": "@angee/messaging-integrate-slack",
   "version": "0.0.0",
   "license": "AGPL-3.0-or-later",
   "private": true,
@@ -15,14 +15,9 @@
   },
   "dependencies": {
     "@angee/app": "workspace:*",
-    "@angee/integrate": "workspace:*",
-    "@angee/parties": "workspace:*",
+    "@angee/messaging": "workspace:*",
     "@angee/refine": "workspace:*",
-    "@angee/storage": "workspace:*",
-    "@angee/ui": "workspace:*",
-    "@tanstack/react-virtual": "^3.14.3",
-    "lucide-react": "^1.21.0",
-    "use-debounce": "^10.1.1"
+    "@angee/ui": "workspace:*"
   },
   "peerDependencies": {
     "@tanstack/react-router": "^1",

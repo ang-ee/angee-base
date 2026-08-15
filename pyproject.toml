@@ -25,7 +25,7 @@ cache_dir = ".pytest_cache"
 DJANGO_SETTINGS_MODULE = "tests.settings"
 python_files = ["test_*.py"]
 testpaths = ["tests", "addons/angee/resources/tests"]
-pythonpath = [".", "addons"]
+pythonpath = [".", "addons", "../angee-examples/addons"]
 addopts = "-ra --strict-markers --import-mode=importlib"
 
 [tool.ruff]

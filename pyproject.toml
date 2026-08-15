@@ -1,0 +1,49 @@
+[project]
+name = "angee-base"
+version = "0.0.0"
+requires-python = ">=3.14"
+dependencies = ["django-angee[postgres]"]
+
+[dependency-groups]
+dev = [
+  "daphne>=4.0",
+  "faker>=30.0",
+  "pytest>=8.0",
+  "pytest-django>=4.8",
+  "ruff>=0.15.12",
+]
+
+[tool.uv]
+package = false
+cache-dir = ".angee/caches/uv"
+
+[tool.uv.sources]
+django-angee = { path = "../angee-django", editable = true }
+
+[tool.pytest.ini_options]
+cache_dir = ".pytest_cache"
+DJANGO_SETTINGS_MODULE = "tests.settings"
+python_files = ["test_*.py"]
+testpaths = ["tests", "addons/angee/resources/tests"]
+pythonpath = [".", "addons"]
+addopts = "-ra --strict-markers --import-mode=importlib"
+
+[tool.ruff]
+line-length = 120
+target-version = "py314"
+cache-dir = ".ruff_cache"
+src = [".", "addons"]
+exclude = [
+  ".angee",
+  ".git",
+  ".mypy_cache",
+  ".reference",
+  ".pytest_cache",
+  ".ruff_cache",
+  ".venv",
+  "node_modules",
+  "**/runtime",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
